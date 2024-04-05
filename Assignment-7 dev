@@ -51,3 +51,4 @@ if prediction[0] == 1:
 else:
     print("The team is predicted not to make the playoffs.")
 print("Probability of making the playoffs:", probability[0][1])
+print("Go Yankees")
