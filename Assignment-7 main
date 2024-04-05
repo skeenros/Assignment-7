@@ -1,0 +1,53 @@
+# Importing necessary libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# Define the file path of the spreadsheet
+file_path = r'C:\Users\SkeenRH24\Downloads\baseball_data.xlsx'
+
+# Load the data from the spreadsheet
+data = pd.read_excel(file_path)
+
+# Select relevant columns for prediction
+selected_columns = ['Runs Scored', 'Runs Allowed', 'Wins', 'OBP', 'SLG', 'Team Batting Average', 'Playoffs']
+
+# Filter the data to include only selected columns
+data = data[selected_columns]
+
+# Split data into features (X) and target variable (y)
+X = data.drop(columns=['Playoffs'])  # Features
+y = data['Playoffs']  # Target variable
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the RandomForestClassifier model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Make predictions on the test set
+predictions = model.predict(X_test)
+
+# Calculate the accuracy of the model
+accuracy = accuracy_score(y_test, predictions)
+print("Accuracy of the model:", accuracy)
+
+# Predict whether a team can make the playoffs based on given team values
+# Assuming team_values is a dictionary containing Runs Scored, Runs Allowed, Wins, OBP, SLG, and Team Batting Average
+team_values = {'Runs Scored': 750, 'Runs Allowed': 650, 'Wins': 95, 'OBP': 0.350, 'SLG': 0.480, 'Team Batting Average': 0.270}
+team_df = pd.DataFrame([team_values])
+
+# Use the trained model to predict if the team would make the playoffs
+prediction = model.predict(team_df)
+probability = model.predict_proba(team_df)
+
+# Print the prediction and probability
+if prediction[0] == 1:
+    print("The team is predicted to make the playoffs.")
+else:
+    print("The team is predicted not to make the playoffs.")
+print("Probability of making the playoffs:", probability[0][1])
